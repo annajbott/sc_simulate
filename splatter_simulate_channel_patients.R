@@ -1,7 +1,7 @@
 library(tidyverse)
 library(splatter)
 #library(optparse)
-source('splatter_methods.R')
+source('multi_batch_functions.R')
 
 
 # Rewritten certain functions in Splat simulate 

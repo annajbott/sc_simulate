@@ -27,7 +27,7 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 1400000
+nCells = 1400
 nChannels = 10
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
@@ -47,7 +47,7 @@ message("Parameters estimated")
 # Set number of cells to 1.4 million (round number with 70 channels) - not needed
 #ncells <- 1400000
 #params_pmbc <- setParam(params_pmbc, "batchCells", ncells)
-
+params_pmbc <- setParam(params_pmbc, "lib.loc", 11)
 params_pmbc <- setParam(params_pmbc, "nGenes", nGenes)
 
 # Set seed
@@ -125,4 +125,28 @@ for(idx in seq(nBatches)){
     }
 }
 
+#test <- read.csv("out_dir/channel_1/quants_mat.csv")
+example_mat <- read.csv("out_dir/channel_1/quants_mat.csv", header = FALSE)
 
+
+mat_all <- data.frame(matrix(NA, nrow = dim(example_mat)[1]))
+
+for(idx in seq(nBatches)){
+    
+    file_mat <- paste0("out_dir/channel_", idx, "/quants_mat.csv")
+    file_cols <- paste0("out_dir/channel_", idx, "/quants_mat_cols.txt")
+    file_rows <- paste0("out_dir/channel_", idx, "/quants_mat_rows.txt")
+    
+    mat <- read.csv(file = file_mat, header = FALSE)
+    cols <- read.csv(file = file_cols, header = FALSE)
+    cols <- cols$V1
+    
+    rows <- read.csv(file = file_rows, header = FALSE)
+    rows <- rows$V1
+    
+    colnames(mat) <- rows
+    rownames(mat) <- cols
+    
+    mat_all <- cbind(mat_all, mat)
+    
+}

@@ -27,7 +27,7 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 1400000
+nCells = 1400
 nChannels = 70
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
@@ -38,9 +38,11 @@ batchcells = rep(nCells/nBatches, nBatches)
 
 # Load SCE from 10X PBMC data (1000 cells)- processed with salmon alevin
 sce_pbmc <- readRDS("ground_truth_1000_sce.rds")
+message("SCE loaded")
 
 # Estimate paramters for splatter
 params_pmbc <- splatEstimate(sce_pbmc)
+message("Parameters estimated")
 
 # Set number of cells to 1.4 million (round number with 70 channels) - not needed
 #ncells <- 1400000
@@ -59,7 +61,7 @@ set.seed(1234)
 # facLoc and facScale affects mean and sd of batch/group effects 
 sim <- splatSimulate_multi_batches(params = params_pmbc,
                             batchCells = batchcells, method = "groups", group.prob = c(0.2,0.2,0.2,0.2,0.2),
-                            verbose = TRUE, nChannels = 70,  nPatients = 14, 
+                            verbose = TRUE, nChannels = nChannels,  nPatients = nPatients, 
                             channel.facLoc = 0.05, channel.facScale = 0.05, 
                             patient.facLoc = 0.15, patient.facScale = 0.15, 
                             de.prob = c(0.1, 0.1, 0.1, 0.2, 0.2), de.facLoc = 0.2, de.facScale = 0.4,)
@@ -95,12 +97,12 @@ for(idx in seq(nBatches)){
     start = (idx*cells_in_pool) - (cells_in_pool - 1) # Start of each pool
     end = idx*cells_in_pool # End of each pool
 
-    sce_subset = test[,start:end]
+    sce_subset = sim[,start:end]
     cell_barcodes <- sample(barcodes, cells_in_pool, replace = FALSE)
 
     colData(sce_subset)$Cell <- cell_barcodes
     # rownames too
-    rownames(colData(test)) <- cell_barcodes
+    rownames(colData(sce_subset)) <- cell_barcodes
 
     # Each channel per pool
     for(chnl in seq(channels_per_pool)){

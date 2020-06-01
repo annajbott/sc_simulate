@@ -91,6 +91,8 @@ channels_per_pool = nChannels/nBatches
 cells_in_channel = cells_in_pool/channels_per_pool
 channel_no = 0 
 
+metadata <-  list() 
+
 for(idx in seq(nBatches)){
 
     # Subset large matrix into each pool
@@ -98,6 +100,8 @@ for(idx in seq(nBatches)){
     end = idx*cells_in_pool # End of each pool
 
     sce_subset = sim[,start:end]
+    metadata[[idx]] <- as.data.frame(sce_subset@colData)
+    
     cell_barcodes <- sample(barcodes, cells_in_pool, replace = FALSE)
 
     colData(sce_subset)$Cell <- cell_barcodes
@@ -125,28 +129,37 @@ for(idx in seq(nBatches)){
     }
 }
 
+metadata = do.call(rbind, metadata)
+
+
 #test <- read.csv("out_dir/channel_1/quants_mat.csv")
 example_mat <- read.csv("out_dir/channel_1/quants_mat.csv", header = FALSE)
 
 
-mat_all <- data.frame(matrix(NA, nrow = dim(example_mat)[1]))
+mat_all <- list() 
+
 
 for(idx in seq(nBatches)){
-    
+    print(idx)
     file_mat <- paste0("out_dir/channel_", idx, "/quants_mat.csv")
     file_cols <- paste0("out_dir/channel_", idx, "/quants_mat_cols.txt")
     file_rows <- paste0("out_dir/channel_", idx, "/quants_mat_rows.txt")
     
     mat <- read.csv(file = file_mat, header = FALSE)
     cols <- read.csv(file = file_cols, header = FALSE)
-    cols <- cols$V1
-    
     rows <- read.csv(file = file_rows, header = FALSE)
+    
+    
+    cols <- cols$V1
     rows <- rows$V1
     
     colnames(mat) <- rows
     rownames(mat) <- cols
     
-    mat_all <- cbind(mat_all, mat)
+    mat_all[[idx]] <- mat
     
 }
+
+mat_all = do.call(cbind, mat_all)
+
+write.csv(mat_all, file = "final_mat.csv")

@@ -2,3 +2,4 @@
 out_dir/
 .ipynb_checkpoints/
 *.py~
+.Rproj.user

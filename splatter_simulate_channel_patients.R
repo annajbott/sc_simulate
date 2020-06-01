@@ -27,7 +27,7 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 1400
+nCells = 140000
 nChannels = 10
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
@@ -162,4 +162,11 @@ for(idx in seq(nBatches)){
 
 mat_all = do.call(cbind, mat_all)
 
+
+# Replace names in group with sample names
+library(plyr)
+metadata$Group <- revalue(metadata$Group, c("Group1"="Severe_COVID", "Group2"="HospMild_COVID", "Group3"="Flu", "Group4"="Healthy", "Group5"="HcwMild_COVID"))
+
 write.csv(mat_all, file = "final_mat.csv")
+write.csv(metadata, file = "final_metadata.csv")
+

@@ -27,8 +27,8 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 1400
-nChannels = 70
+nCells = 1400000
+nChannels = 10
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
 nGenes = 8000

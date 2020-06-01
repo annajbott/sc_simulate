@@ -3,10 +3,15 @@ library(splatter)
 library(scater)
 # library(optparse)
 
-option_list <- list(	    make_option(c("--sce"), default="must_specify",	    help="The sce rds file to estimate parameters from"),	    make_option(c("--ngenes"), default="all",	    help="Number of genes to simulate, default does not subset"))
+option_list <- list(
+	     make_option(c("--sce"), default="must_specify",
+	     help="The sce rds file to estimate parameters from"),
+	     make_option(c("--ngenes"), default="all",
+	     help="Number of genes to simulate, default does not subset"))
 
 opt <- parse_args(OptionParser(option_list=option_list))
-sce <- read.table(opt$sce,header = TRUE, fill = T)subset_genes <- read.table(opt$ngenes,header = TRUE, fill=T)
+sce <- read.table(opt$sce,header = TRUE, fill = T)
+subset_genes <- read.table(opt$ngenes,header = TRUE, fill=T)
 
 # Load SCE from 10X PBMC data (1000 cells)- processed with salmon alevin
 sce_pbmc <- readRDS("ground_truth_1000_sce.rds")

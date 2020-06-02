@@ -1,3 +1,4 @@
+library(plyr)
 library(tidyverse)
 library(splatter)
 #library(optparse)
@@ -163,8 +164,7 @@ for(idx in seq(nBatches)){
 mat_all = do.call(cbind, mat_all)
 
 
-# Replace names in group with sample names
-library(plyr)
+# Replace names in group with sample name
 metadata$Group <- revalue(metadata$Group, c("Group1"="Severe_COVID", "Group2"="HospMild_COVID", "Group3"="Flu", "Group4"="Healthy", "Group5"="HcwMild_COVID"))
 
 write.csv(mat_all, file = "final_mat.csv")

@@ -28,11 +28,11 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 140000
+nCells = 1400000
 nChannels = 10
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
-nGenes = 8000
+nGenes = 4000
 
 # Number of cells in each batch (pool)
 batchcells = rep(nCells/nBatches, nBatches)
@@ -76,7 +76,7 @@ sim <- splatSimulate_multi_batches(params = params_pmbc,
 #########
 
 ### Read barcodes in
-barcodes <- read_delim("737K-august-2016.txt", delim = "\t", col_names =  FALSE)
+barcodes <- read_delim("../data/737K-august-2016.txt", delim = "\t", col_names =  FALSE)
 barcodes <- barcodes$X1
 
 

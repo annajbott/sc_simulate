@@ -48,6 +48,7 @@ splatSimBatchEffects_multi <- function(sim, params,
     }
     
     return(sim)
+    rm(sim)
 }
 
 ###########################################################################################
@@ -104,6 +105,7 @@ splatSimBatchCellMeans_multi <- function(sim, params) {
     assays(sim)$BatchCellMeans <- batch.means.cell
 
     return(sim)
+    rm(sim)
 }
 
 ###########################################################################################
@@ -111,7 +113,7 @@ splatSimBatchCellMeans_multi <- function(sim, params) {
 
 splatSimulate_multi_batches <- function(params = newSplatParams(),
                           method = c("single", "groups", "paths"),
-                          verbose = TRUE, nChannels = 70,  nPatients = 14, 
+                          verbose = TRUE, nChannels = 10,  nPatients = 14, 
                                         channel.facLoc = 0.05, channel.facScale = 0.05, 
                                         patient.facLoc = 0.15, patient.facScale = 0.15, ...) {
     
@@ -230,6 +232,7 @@ splatSimulate_multi_batches <- function(params = newSplatParams(),
 
     if (verbose) {message("Done!")}
     return(sim)
+    rm(sim)
 }
 
 ###########################################################################################

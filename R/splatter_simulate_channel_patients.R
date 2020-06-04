@@ -28,7 +28,7 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 1400000
+nCells = 600000
 nChannels = 10
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
@@ -118,8 +118,8 @@ for(idx in seq(nBatches)){
         # Create directories
         dir <- paste0(c("out_dir/", "channel_", channel_no), collapse = "")
         dir.create(path = dir)
-        barcodes_file <- paste0(c(dir, "/quants_mat_rows.txt"), collapse ="" )
-        gene_file <- paste0(c(dir, "/quants_mat_cols.txt"), collapse ="" )
+        barcodes_file <- paste0(c(dir, "/quants_mat_cols.txt"), collapse ="" )
+        gene_file <- paste0(c(dir, "/quants_mat_rows.txt"), collapse ="" )
         count_file <- paste0(c(dir, "/quants_mat.csv"), collapse ="" )
 
         # Write to files

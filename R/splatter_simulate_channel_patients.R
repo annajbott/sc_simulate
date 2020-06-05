@@ -28,8 +28,8 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 600000
-nChannels = 10
+nCells = 7000
+nChannels = 70
 nBatches = 10
 nPatients = 14 # 14 per pool, 140 in total
 nGenes = 4000
@@ -134,13 +134,14 @@ metadata = do.call(rbind, metadata)
 
 
 #test <- read.csv("out_dir/channel_1/quants_mat.csv")
-example_mat <- read.csv("out_dir/channel_1/quants_mat.csv", header = FALSE)
+#example_mat <- read.csv("out_dir/channel_1/quants_mat.csv", header = FALSE)
 
 
 mat_all <- list() 
+cols_all <- list()
+rows_all <- list()
 
-
-for(idx in seq(nBatches)){
+for(idx in seq(nChannels)){
     print(idx)
     file_mat <- paste0("out_dir/channel_", idx, "/quants_mat.csv")
     file_cols <- paste0("out_dir/channel_", idx, "/quants_mat_cols.txt")
@@ -154,19 +155,28 @@ for(idx in seq(nBatches)){
     cols <- cols$V1
     rows <- rows$V1
     
-    colnames(mat) <- rows
-    rownames(mat) <- cols
+    colnames(mat) <- cols
+    rownames(mat) <- rows
     
     mat_all[[idx]] <- mat
+    cols_all[[idx]] <- cols
+    rows_all[[idx]] <- rows
+    
+    
     
 }
 
 mat_all = do.call(cbind, mat_all)
+cols_all = do.call(cbind, cols_all)
+rows_all = do.call(cbind, rows_all)
 
 
 # Replace names in group with sample name
 metadata$Group <- revalue(metadata$Group, c("Group1"="Severe_COVID", "Group2"="HospMild_COVID", "Group3"="Flu", "Group4"="Healthy", "Group5"="HcwMild_COVID"))
 
 write.csv(mat_all, file = "final_mat.csv")
+write.table(cols_all, file="final_cols.txt")
+write.table(rows_all, file="final_rows.txt")
+
 write.csv(metadata, file = "final_metadata.csv")
 

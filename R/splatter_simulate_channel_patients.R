@@ -162,19 +162,18 @@ for(idx in seq(nChannels)){
     cols_all[[idx]] <- cols
     rows_all[[idx]] <- rows
     
-    
-    
 }
 
 mat_all = do.call(cbind, mat_all)
-cols_all = do.call(cbind, cols_all)
-rows_all = do.call(cbind, rows_all)
+cols_all = do.call(rbind, cols_all)
+rows_all = do.call(rbind, rows_all)
 
 
 # Replace names in group with sample name
 metadata$Group <- revalue(metadata$Group, c("Group1"="Severe_COVID", "Group2"="HospMild_COVID", "Group3"="Flu", "Group4"="Healthy", "Group5"="HcwMild_COVID"))
 
 write.csv(mat_all, file = "final_mat.csv")
+length(cols_all)
 write.table(cols_all, file="final_cols.txt")
 write.table(rows_all, file="final_rows.txt")
 

@@ -1,6 +1,7 @@
 library(plyr)
 library(tidyverse)
 library(splatter)
+library(Matrix)
 #library(optparse)
 source('multi_batch_functions.R')
 
@@ -28,10 +29,10 @@ assignInNamespace("splatSimulate", splatSimulate_multi_batches, ns = "splatter")
 
 ### Maybe optparse feature for nGenes etc.
 
-nCells = 7000
+nCells = 700000
 nChannels = 70
 nBatches = 10
-nPatients = 14 # 14 per pool, 140 in total
+nPatients = 140 # 14 per pool, 140 in total
 nGenes = 4000
 
 # Number of cells in each batch (pool)
@@ -165,17 +166,35 @@ for(idx in seq(nChannels)){
 }
 
 mat_all = do.call(cbind, mat_all)
+
+rownames(mat_all) <- rows
 cols_all = do.call(rbind, cols_all)
 rows_all = do.call(rbind, rows_all)
-
 
 # Replace names in group with sample name
 metadata$Group <- revalue(metadata$Group, c("Group1"="Severe_COVID", "Group2"="HospMild_COVID", "Group3"="Flu", "Group4"="Healthy", "Group5"="HcwMild_COVID"))
 
-write.csv(mat_all, file = "final_mat.csv")
-length(cols_all)
-write.table(cols_all, file="final_cols.txt")
-write.table(rows_all, file="final_rows.txt")
 
-write.csv(metadata, file = "final_metadata.csv")
 
+mat_name <- paste0(nCells, "_", "ch", nChannels, "_", "final_mat.csv")
+col_name <- paste0(nCells, "_", "ch", nChannels, "_", "final_cols.txt")
+row_name <- paste0(nCells, "_", "ch", nChannels, "_", "final_rows.txt")
+write.csv(mat_all, file = mat_name)
+
+write.table(cols_all, file=col_name, row.names = FALSE, col.names = FALSE)
+write.table(rows_all, file=row_name, row.names = FALSE, col.names = FALSE)
+
+meta_name <- paste0(nCells, "_", "ch", nChannels, "_", "metadata.csv")
+write.csv(metadata, file = meta_name)
+
+# Generate market matrix
+
+sparse.all <- Matrix(as.matrix(mat_all), sparse = T)
+
+mat_name <- paste0(nCells, "_", "ch", nChannels, "_", "matrix.mtx")
+col_name <- paste0(nCells, "_", "ch", nChannels, "_", "barcodes.tsv")
+row_name <- paste0(nCells, "_", "ch", nChannels, "_", "genes.tsv")
+writeMM(obj=sparse.all, file = mat_name)
+
+write.table(colnames(mat_all), file=col_name, row.names = FALSE, col.names = FALSE)
+write.table(rownames(mat_all), file=row_name, row.names = FALSE, col.names = FALSE)

@@ -68,11 +68,17 @@ sim <- splatSimulate_multi_batches(params = params_pmbc,
                             patient.facLoc = 0.15, patient.facScale = 0.15, 
                             de.prob = c(0.1, 0.1, 0.1, 0.2, 0.2), de.facLoc = 0.2, de.facScale = 0.4,)
 
-## Read in random ensembl gene names here
+
+## Read in highest expressed PBMC ensembl gene names 
 ## Replace Gene1, Gene2 ... with Ensembl names
-# .. 
-# ...
-# ....
+
+highest_expressed_list <-  (sce_pbmc %>% counts) %>% rowSums() %>% order() %>% rev() # Highest expressed genes from PBMCs
+highest_expressed_list_top <- highest_expressed_list[1:nGenes]
+highest_expressed_genes <- sce_pbmc[highest_expressed_list_top,] %>% rownames
+rownames(sim) <- highest_expressed_genes
+
+
+
 
 #########
 

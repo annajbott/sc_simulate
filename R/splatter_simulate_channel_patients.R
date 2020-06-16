@@ -34,6 +34,7 @@ nChannels = 70
 nBatches = 10
 nPatients = 140 # 14 per pool, 140 in total
 nGenes = 4000
+distinct_barcode_pool <- FALSE # TRUE means for each pool, randomly sample barcodes. If FALSE distinct barcodes across each cell and pool (if nCells < 737,280)
 
 # Number of cells in each batch (pool)
 batchcells = rep(nCells/nBatches, nBatches)
@@ -101,6 +102,9 @@ channel_no = 0
 
 metadata <-  list() 
 
+if(!distinct_barcode_pool & nCells < (barcodes %>% unique %>% length)){
+cell_barcodes_all <- sample(barcodes, nCells, replace = FALSE)}
+
 for(idx in seq(nBatches)){
 
     # Subset large matrix into each pool
@@ -110,10 +114,14 @@ for(idx in seq(nBatches)){
     sce_subset = sim[,start:end]
     metadata[[idx]] <- as.data.frame(sce_subset@colData)
     
+    # Distinct CBs for whole experiment or for each pool only
+    if(!distinct_barcode_pool & nCells < (barcodes %>% unique %>% length)){
+    cell_barcodes <- cell_barcodes_all[start:end]
+    } else{
     cell_barcodes <- sample(barcodes, cells_in_pool, replace = FALSE)
+    }
 
     colData(sce_subset)$Cell <- cell_barcodes
-    # rownames too
     rownames(colData(sce_subset)) <- cell_barcodes
 
     # Each channel per pool
@@ -137,6 +145,8 @@ for(idx in seq(nBatches)){
     }
 }
 
+
+# Could do with if statements in for loop, but would slow down considerably
 metadata = do.call(rbind, metadata)
 
 
